@@ -213,7 +213,7 @@
       <span>Mi Cartilla</span>
     </a>
     <nav style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-      <span style="font-size: 13px; color: #555; margin-right: 6px;">PVU México · Cartillas Nacionales</span>
+      <span id="estadoSync" style="font-size: 13px; color: #1f5f56; font-weight: 600; margin-right: 6px;">Supabase conectado</span>
       <button type="button" id="btnNavInicio" class="btn-oscuro" style="min-height: 42px; padding: 0 16px; font-size: 14px;">Perfil / Inicio</button>
     </nav>
   </header>
@@ -268,7 +268,7 @@
     <section style="flex: 1 1 540px; min-width: 0; display: flex; flex-direction: column; gap: 16px;">
       <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
         <h2 style="margin: 0; font-size: 20px;">Perfiles en la Base de Datos</h2>
-        <span style="font-size: 13px; color: #555;">Clasificación automática por fecha de nacimiento</span>
+        <span style="font-size: 13px; color: #555;">Sincronizado con Supabase</span>
       </div>
       <div id="listaPerfiles" style="display: flex; flex-direction: column; gap: 16px;"></div>
     </section>
@@ -363,7 +363,19 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  const SUPABASE_URL = 'https://rboxkooqjuanlemuntci.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_r83PNEATPrNnTIFnEn_YZQ_lJTybzup';
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  function setEstadoSync(texto, esError) {
+    var el = document.getElementById('estadoSync');
+    if (!el) return;
+    el.textContent = texto;
+    el.style.color = esError ? '#991b1b' : '#1f5f56';
+  }
+
   function evalLimiteHoy(edadObj, tipoLimite) {
     if (tipoLimite === 'hepB_neonatal') {
       if (edadObj.dias <= 7) return { vencido: false, texto: 'Dentro del límite (' + edadObj.dias + ' de 7 días)', clase: 'limite-ok' };
@@ -408,9 +420,7 @@
           dosis: '1 dosis única al nacer (peso ≥ 2,000 g).',
           limiteTexto: 'Preferentemente antes de 1 año (excepcionalmente hasta antes de los 5 años).',
           tipoLimite: 'bcg',
-          dosisList: [
-            { mesLabel: 'Al nacer (1.ª)', check: true, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: 'Al nacer (1.ª)', check: true, fecha: '' }]
         },
         {
           vacuna: 'Hepatitis B (pediátrica)',
@@ -418,9 +428,7 @@
           dosis: '1 dosis en las primeras 24 horas de vida.',
           limiteTexto: 'Hasta los 7 días de vida (luego se cubre con Hexavalente).',
           tipoLimite: 'hepB_neonatal',
-          dosisList: [
-            { mesLabel: 'Recién nacido (≤ 7 días)', check: true, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: 'Recién nacido (≤ 7 días)', check: true, fecha: '' }]
         },
         {
           vacuna: 'Hexavalente acelular',
@@ -476,9 +484,7 @@
           dosis: '1 dosis de refuerzo a los 4 años.',
           limiteTexto: 'Hasta 6 años, 11 meses y 29 días.',
           tipoLimite: 'dpt',
-          dosisList: [
-            { mesLabel: '4 años (Refuerzo)', check: false, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: '4 años (Refuerzo)', check: false, fecha: '' }]
         },
         {
           vacuna: 'Influenza estacional',
@@ -510,9 +516,7 @@
           dosis: '1 dosis única a los 12 o 18 meses (incorporación universal 2025-2026).',
           limiteTexto: 'Población infantil sin antecedente vacunal (consultar disponibilidad).',
           tipoLimite: 'abierto',
-          dosisList: [
-            { mesLabel: '12 a 18 meses', check: false, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: '12 a 18 meses', check: false, fecha: '' }]
         },
         {
           vacuna: 'Varicela',
@@ -520,12 +524,9 @@
           dosis: '1 dosis a los 12 meses.',
           limiteTexto: 'Aplica en guarderías/estancias infantiles o población de riesgo.',
           tipoLimite: 'abierto',
-          dosisList: [
-            { mesLabel: '12 meses', check: false, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: '12 meses', check: false, fecha: '' }]
         }
       ],
-
       adolescentes: [
         {
           vacuna: 'VPH (Virus del Papiloma Humano)',
@@ -533,9 +534,7 @@
           dosis: '1 dosis única en 5.º de primaria o a los 11 años (y campañas vigentes).',
           limiteTexto: 'Rezagadas hasta 14-15 años en sector público (VIH/alto riesgo hasta mayor edad).',
           tipoLimite: 'abierto',
-          dosisList: [
-            { mesLabel: '11 años / 5.º primaria', check: true, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: '11 años / 5.º primaria', check: true, fecha: '' }]
         },
         {
           vacuna: 'Td (Tétanos y Difteria)',
@@ -578,9 +577,7 @@
           dosis: '1 dosis en cada embarazo desde semana 20 (óptimo semanas 27 a 36).',
           limiteTexto: 'Durante el embarazo.',
           tipoLimite: 'abierto',
-          dosisList: [
-            { mesLabel: 'Sem. 20+ (ideal 27-36)', check: false, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: 'Sem. 20+ (ideal 27-36)', check: false, fecha: '' }]
         },
         {
           vacuna: 'Influenza y COVID-19',
@@ -594,7 +591,6 @@
           ]
         }
       ],
-
       adultoHombre: [
         {
           vacuna: 'Td (Tétanos y Difteria)',
@@ -625,9 +621,7 @@
           dosis: '1 dosis anual (octubre a marzo).',
           limiteTexto: 'Con factores de riesgo (diabetes, HTA, obesidad mórbida, EPOC, VIH) o salud.',
           tipoLimite: 'abierto',
-          dosisList: [
-            { mesLabel: 'Anual (Oct–Mar)', check: false, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: 'Anual (Oct–Mar)', check: false, fecha: '' }]
         },
         {
           vacuna: 'COVID-19',
@@ -635,9 +629,7 @@
           dosis: '1 dosis anual en campaña invernal.',
           limiteTexto: 'Población de 20 a 59 años con comorbilidades de riesgo y personal de salud.',
           tipoLimite: 'abierto',
-          dosisList: [
-            { mesLabel: 'Anual (Invernal)', check: false, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: 'Anual (Invernal)', check: false, fecha: '' }]
         },
         {
           vacuna: 'Hepatitis B',
@@ -652,7 +644,6 @@
           ]
         }
       ],
-
       adultoMujer: [
         {
           vacuna: 'Td (Tétanos y Difteria)',
@@ -672,9 +663,7 @@
           dosis: '1 dosis en cada embarazo desde semana 20 (óptimo semanas 27 a 36).',
           limiteTexto: 'Sin límite de edad mientras exista embarazo.',
           tipoLimite: 'abierto',
-          dosisList: [
-            { mesLabel: 'Sem. 20+ (ideal 27-36)', check: false, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: 'Sem. 20+ (ideal 27-36)', check: false, fecha: '' }]
         },
         {
           vacuna: 'VSR (Virus Sincitial Respiratorio)',
@@ -682,9 +671,7 @@
           dosis: '1 dosis durante el embarazo entre las semanas 32 y 36 (lineamiento 2026).',
           limiteTexto: 'Exclusiva entre semanas 32 y 36 de gestación.',
           tipoLimite: 'abierto',
-          dosisList: [
-            { mesLabel: 'Semanas 32 a 36', check: false, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: 'Semanas 32 a 36', check: false, fecha: '' }]
         },
         {
           vacuna: 'Influenza y COVID-19',
@@ -721,7 +708,6 @@
           ]
         }
       ],
-
       adultosMayores: [
         {
           vacuna: 'Antineumocócica (Conjugada / Polisacárida)',
@@ -729,9 +715,7 @@
           dosis: '1 dosis única a partir de los 60 años (o esquema secuencial según indicación).',
           limiteTexto: 'Sin límite de edad (desde los 60 años en adelante).',
           tipoLimite: 'abierto',
-          dosisList: [
-            { mesLabel: '60 años y más', check: true, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: '60 años y más', check: true, fecha: '' }]
         },
         {
           vacuna: 'Influenza estacional',
@@ -739,9 +723,7 @@
           dosis: '1 dosis anual cada temporada invernal.',
           limiteTexto: 'Sin límite de edad (universal desde los 60 años).',
           tipoLimite: 'abierto',
-          dosisList: [
-            { mesLabel: 'Anual (Invernal)', check: true, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: 'Anual (Invernal)', check: true, fecha: '' }]
         },
         {
           vacuna: 'COVID-19',
@@ -749,9 +731,7 @@
           dosis: '1 dosis anual cada temporada invernal.',
           limiteTexto: 'Sin límite de edad (universal desde los 60 años).',
           tipoLimite: 'abierto',
-          dosisList: [
-            { mesLabel: 'Anual (Invernal)', check: false, fecha: '' }
-          ]
+          dosisList: [{ mesLabel: 'Anual (Invernal)', check: false, fecha: '' }]
         },
         {
           vacuna: 'Td (Tétanos y Difteria)',
@@ -862,6 +842,108 @@
   var perfilActualId = null;
   var perfilEditandoId = null;
 
+  function aplicarDosisGuardadasAEsquemas(esquemas, registrosBD) {
+    if (!registrosBD || registrosBD.length === 0) return;
+    var mapa = {};
+    registrosBD.forEach(function (r) {
+      var clave = r.tipo_esquema + '||' + r.vacuna + '||' + r.mes_label;
+      mapa[clave] = r;
+    });
+
+    Object.keys(esquemas).forEach(function (tipoEsquema) {
+      esquemas[tipoEsquema].forEach(function (vacunaObj) {
+        vacunaObj.dosisList.forEach(function (dosisObj) {
+          var clave = tipoEsquema + '||' + vacunaObj.vacuna + '||' + dosisObj.mesLabel;
+          if (mapa[clave]) {
+            dosisObj.check = Boolean(mapa[clave].aplicada);
+            dosisObj.fecha = mapa[clave].fecha_aplicacion || '';
+          }
+        });
+      });
+    });
+  }
+
+  async function guardarDosisEnSupabase(perfilId, tipoEsquema, vacuna, mesLabel, aplicada, fechaAplicacion) {
+    setEstadoSync('Guardando dosis...', false);
+    var res = await db
+      .from('dosis_registros')
+      .upsert({
+        perfil_id: perfilId,
+        tipo_esquema: tipoEsquema,
+        vacuna: vacuna,
+        mes_label: mesLabel,
+        aplicada: Boolean(aplicada),
+        fecha_aplicacion: fechaAplicacion || null,
+        actualizado_en: new Date().toISOString()
+      }, { onConflict: 'perfil_id,tipo_esquema,vacuna,mes_label' });
+
+    if (res.error) {
+      console.error('Error guardando dosis:', res.error.message);
+      setEstadoSync('Error al guardar en Supabase', true);
+    } else {
+      setEstadoSync('Guardado en Supabase', false);
+    }
+  }
+
+  function fechaHaceAnios(anios) {
+    var hoy = obtenerHoyLocal();
+    var d = new Date(hoy.getFullYear() - anios, hoy.getMonth(), hoy.getDate());
+    var mm = String(d.getMonth() + 1).padStart(2, '0');
+    var dd = String(d.getDate()).padStart(2, '0');
+    return d.getFullYear() + '-' + mm + '-' + dd;
+  }
+
+  async function cargarDesdeSupabase() {
+    setEstadoSync('Cargando desde Supabase...', false);
+    var resPerfiles = await db
+      .from('perfiles')
+      .select('*')
+      .order('creado_en', { ascending: false });
+
+    if (resPerfiles.error) {
+      console.error('Error cargando perfiles:', resPerfiles.error.message);
+      setEstadoSync('Revisa URL / Key o tablas en Supabase', true);
+      return;
+    }
+
+    var filasPerfiles = resPerfiles.data || [];
+
+    if (filasPerfiles.length === 0) {
+      var inicialesData = [
+        { nombre: 'Sofía González', nacimiento: fechaHaceAnios(4), relacion: 'Mi hija o hijo', sexo_cartilla: 'mujer' },
+        { nombre: 'Carlos Martínez', nacimiento: fechaHaceAnios(41), relacion: 'Soy yo', sexo_cartilla: 'hombre' },
+        { nombre: 'María Zárate', nacimiento: fechaHaceAnios(65), relacion: 'Otro familiar', sexo_cartilla: 'mujer' }
+      ];
+      var insertRes = await db.from('perfiles').insert(inicialesData).select();
+      if (!insertRes.error && insertRes.data) {
+        filasPerfiles = insertRes.data;
+      }
+    }
+
+    var resDosis = await db.from('dosis_registros').select('*');
+    var filasDosis = resDosis.error ? [] : (resDosis.data || []);
+
+    perfiles = filasPerfiles.map(function (fila) {
+      var edadObj = calcularEdadEntreFechas(fila.nacimiento);
+      var esquemas = crearEsquemasIniciales();
+      var dosisDelPerfil = filasDosis.filter(function (d) { return d.perfil_id === fila.id; });
+      aplicarDosisGuardadasAEsquemas(esquemas, dosisDelPerfil);
+
+      return {
+        id: fila.id,
+        nombre: fila.nombre,
+        nacimiento: fila.nacimiento,
+        sexoCartilla: fila.sexo_cartilla || 'hombre',
+        relacion: fila.relacion || 'Soy yo',
+        info: obtenerCartillaPorEdad(edadObj, fila.sexo_cartilla || 'hombre'),
+        esquemas: esquemas
+      };
+    });
+
+    setEstadoSync('Supabase conectado', false);
+    renderizarListaPerfiles();
+  }
+
   function mostrarVistaPrincipal() {
     perfilActualId = null;
     document.getElementById('vistaEstado').classList.add('oculto');
@@ -870,16 +952,25 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function eliminarPerfil(id) {
+  async function eliminarPerfil(id) {
     var perfil = perfiles.find(function (p) { return p.id === id; });
     if (!perfil) return;
 
     var confirmado = window.confirm(
-      '¿Estás seguro de que deseas eliminar el perfil de "' + perfil.nombre + '"?\nEsta acción borrará su registro de la lista.'
+      '¿Estás seguro de que deseas eliminar el perfil de "' + perfil.nombre + '"?\nEsta acción borrará su registro de la base de datos.'
     );
     if (!confirmado) return;
 
+    setEstadoSync('Eliminando...', false);
+    var res = await db.from('perfiles').delete().eq('id', id);
+    if (res.error) {
+      console.error('Error eliminando perfil:', res.error.message);
+      setEstadoSync('Error al eliminar en Supabase', true);
+      return;
+    }
+
     perfiles = perfiles.filter(function (p) { return p.id !== id; });
+    setEstadoSync('Perfil eliminado', false);
 
     if (perfilActualId === id) {
       mostrarVistaPrincipal();
@@ -1013,7 +1104,7 @@
 
       tdDosisControles.appendChild(listaControles);
 
-      function refrescarVacuna() {
+      function refrescarVacuna(ctrlModificado) {
         var hoyLocal = obtenerHoyLocal();
         var fechaNac = parsearFechaLocal(perfil.nacimiento);
         var errores = [];
@@ -1059,6 +1150,17 @@
           }
         });
 
+        if (ctrlModificado) {
+          guardarDosisEnSupabase(
+            perfil.id,
+            tipoEsquema,
+            vacunaObj.vacuna,
+            ctrlModificado.dosisObj.mesLabel,
+            ctrlModificado.dosisObj.check,
+            ctrlModificado.dosisObj.fecha
+          );
+        }
+
         if (avisos.length > 0) {
           divAvisoDestiempo.classList.remove('oculto');
           divAvisoDestiempo.textContent = avisos.join(' ');
@@ -1091,10 +1193,10 @@
         }
       }
 
-      refrescarVacuna();
+      refrescarVacuna(null);
       controlesDosis.forEach(function (ctrl) {
-        ctrl.checkbox.addEventListener('change', refrescarVacuna);
-        ctrl.inputFecha.addEventListener('change', refrescarVacuna);
+        ctrl.checkbox.addEventListener('change', function () { refrescarVacuna(ctrl); });
+        ctrl.inputFecha.addEventListener('change', function () { refrescarVacuna(ctrl); });
       });
 
       tr.appendChild(tdVacuna);
@@ -1206,14 +1308,6 @@
     });
   }
 
-  function fechaHaceAnios(anios) {
-    var hoy = obtenerHoyLocal();
-    var d = new Date(hoy.getFullYear() - anios, hoy.getMonth(), hoy.getDate());
-    var mm = String(d.getMonth() + 1).padStart(2, '0');
-    var dd = String(d.getDate()).padStart(2, '0');
-    return d.getFullYear() + '-' + mm + '-' + dd;
-  }
-
   document.getElementById('linkInicio').addEventListener('click', function (e) {
     e.preventDefault();
     mostrarVistaPrincipal();
@@ -1232,7 +1326,7 @@
     if (e.target === this) cerrarModalEditar();
   });
 
-  document.getElementById('formEditarPerfil').addEventListener('submit', function (event) {
+  document.getElementById('formEditarPerfil').addEventListener('submit', async function (event) {
     event.preventDefault();
     if (perfilEditandoId === null) return;
 
@@ -1251,6 +1345,23 @@
     );
     if (!confirmado) return;
 
+    setEstadoSync('Actualizando en Supabase...', false);
+    var res = await db
+      .from('perfiles')
+      .update({
+        nombre: nuevoNombre,
+        nacimiento: nuevaFecha,
+        sexo_cartilla: nuevoSexo,
+        relacion: nuevaRelacion
+      })
+      .eq('id', perfil.id);
+
+    if (res.error) {
+      console.error('Error actualizando perfil:', res.error.message);
+      setEstadoSync('Error al actualizar en Supabase', true);
+      return;
+    }
+
     perfil.nombre = nuevoNombre;
     perfil.nacimiento = nuevaFecha;
     perfil.sexoCartilla = nuevoSexo;
@@ -1259,15 +1370,17 @@
     var edadObj = calcularEdadEntreFechas(perfil.nacimiento);
     perfil.info = obtenerCartillaPorEdad(edadObj, perfil.sexoCartilla);
 
+    var idRefrescar = perfil.id;
     cerrarModalEditar();
     renderizarListaPerfiles();
+    setEstadoSync('Cambios guardados', false);
 
-    if (perfilActualId === perfil.id) {
-      verEstadoDetallado(perfil.id);
+    if (perfilActualId === idRefrescar) {
+      verEstadoDetallado(idRefrescar);
     }
   });
 
-  document.getElementById('registroForm').addEventListener('submit', function (event) {
+  document.getElementById('registroForm').addEventListener('submit', async function (event) {
     event.preventDefault();
     var nombre = document.getElementById('nombre').value.trim();
     var nacimiento = document.getElementById('nacimiento').value;
@@ -1276,45 +1389,44 @@
 
     if (!nombre || !nacimiento) return;
 
-    var edadObj = calcularEdadEntreFechas(nacimiento);
-    var info = obtenerCartillaPorEdad(edadObj, sexoCartilla);
+    setEstadoSync('Guardando perfil...', false);
+    var res = await db
+      .from('perfiles')
+      .insert([{
+        nombre: nombre,
+        nacimiento: nacimiento,
+        sexo_cartilla: sexoCartilla,
+        relacion: relacion
+      }])
+      .select()
+      .single();
 
+    if (res.error || !res.data) {
+      console.error('Error registrando perfil:', res.error ? res.error.message : 'Sin datos');
+      setEstadoSync('Error al guardar perfil', true);
+      return;
+    }
+
+    var fila = res.data;
+    var edadObj = calcularEdadEntreFechas(fila.nacimiento);
     var nuevoPerfil = {
-      id: Date.now() + Math.floor(Math.random() * 1000),
-      nombre: nombre,
-      nacimiento: nacimiento,
-      sexoCartilla: sexoCartilla,
-      relacion: relacion,
-      info: info,
+      id: fila.id,
+      nombre: fila.nombre,
+      nacimiento: fila.nacimiento,
+      sexoCartilla: fila.sexo_cartilla || sexoCartilla,
+      relacion: fila.relacion || relacion,
+      info: obtenerCartillaPorEdad(edadObj, fila.sexo_cartilla || sexoCartilla),
       esquemas: crearEsquemasIniciales()
     };
 
     perfiles.unshift(nuevoPerfil);
     renderizarListaPerfiles();
     document.getElementById('registroForm').reset();
+    setEstadoSync('Perfil guardado en Supabase', false);
     verEstadoDetallado(nuevoPerfil.id);
   });
 
-  var inicialesData = [
-    { nombre: 'Sofía González', nacimiento: fechaHaceAnios(4), relacion: 'Mi hija o hijo', sexoCartilla: 'mujer' },
-    { nombre: 'Carlos Martínez', nacimiento: fechaHaceAnios(41), relacion: 'Soy yo', sexoCartilla: 'hombre' },
-    { nombre: 'María Zárate', nacimiento: fechaHaceAnios(65), relacion: 'Otro familiar', sexoCartilla: 'mujer' }
-  ];
-
-  perfiles = inicialesData.map(function (item, idx) {
-    var edadObj = calcularEdadEntreFechas(item.nacimiento);
-    return {
-      id: idx + 1,
-      nombre: item.nombre,
-      nacimiento: item.nacimiento,
-      sexoCartilla: item.sexoCartilla,
-      relacion: item.relacion,
-      info: obtenerCartillaPorEdad(edadObj, item.sexoCartilla),
-      esquemas: crearEsquemasIniciales()
-    };
-  });
-
-  renderizarListaPerfiles();
+  cargarDesdeSupabase();
 </script>
 </body>
 </html>
